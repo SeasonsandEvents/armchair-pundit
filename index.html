@@ -73,6 +73,29 @@ button:focus-visible,.cell:focus-visible{outline:3px solid var(--flag);outline-o
 .done-panel a{color:var(--ink);font-weight:600}
 .status{font-size:14px;color:var(--muted);min-height:1.5em}
 #kb{position:absolute;opacity:0;width:1px;height:1px;left:-9999px;font-size:16px}
+.head-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.head-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.head-actions button,.share-row button,.handoff button{font:600 13px var(--body);padding:6px 10px;border-radius:4px;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.share-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.share-row button.primary{background:var(--green);border-color:var(--green);color:var(--paper)}
+.handoff{border:1px solid var(--rule);border-radius:6px;padding:16px;background:var(--card);display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;margin-top:14px}
+.handoff .txt{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.handoff h3{font-family:var(--display);font-size:20px;margin:0}
+.handoff p{margin:0;font-size:14px;color:var(--muted);max-width:60ch}
+.handoff input{width:100%;font:500 13px var(--mono);padding:8px;border:1px solid var(--rule);border-radius:4px;background:var(--paper);color:var(--ink)}
+.handoff .qr{background:#fff;padding:8px;border-radius:4px;line-height:0}
+@media (max-width:780px){#bigBtn{display:none}}
+body.big .wrap{max-width:none;padding-inline:3vw;padding-block:12px 12px}
+body.big .picker,body.big footer,body.big .head-actions #handBtn{display:none}
+body.big .sub{margin:8px 0 12px}
+body.big .main{gap:3vw}
+body.big .board{width:min(calc((100dvh - 420px) * var(--cols) / var(--rows)),62vw)}
+body.big .grid{width:100%}
+body.big .cell .ch{font-size:calc((100dvh - 420px) / var(--rows) * .58)}
+body.big .cell .n{font-size:calc((100dvh - 420px) / var(--rows) * .2)}
+body.big .cluebar{font-size:clamp(18px,1.6vw,30px);padding:14px 18px}
+body.big .clues li{font-size:clamp(15px,1.3vw,24px)}
+body.big .clues h3{font-size:clamp(12px,1vw,18px)}
 footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
 @media (prefers-reduced-motion:no-preference){.cell.l{transition:background .12s}}
 </style>
@@ -82,12 +105,27 @@ footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-si
 <div class="wrap">
   <header>
     <h1 class="brand">Injury Time <span>Puzzles</span></h1>
-    <div class="meta" id="date"></div>
+    <div class="head-right">
+      <div class="meta" id="date"></div>
+      <div class="head-actions">
+        <button id="bigBtn" type="button">Big screen</button>
+        <button id="handBtn" type="button">Carry on on another device</button>
+      </div>
+    </div>
   </header>
 
   <div class="sub">
     <h2 id="ptitle"></h2>
     <div class="picker" id="picker" aria-label="Choose a puzzle"></div>
+  </div>
+  <div class="handoff" id="handoff" hidden>
+    <div class="txt">
+      <h3>Carry on on another device</h3>
+      <p>Open this link on your other phone, tablet or computer and your answers and time come with you. On a phone, you can simply point the camera at the code.</p>
+      <input id="handLink" type="text" readonly aria-label="Link to carry on">
+      <div class="share-row"><button id="handCopy" type="button" class="primary">Copy link</button><button id="handClose" type="button">Close</button><span class="status" id="handStatus"></span></div>
+    </div>
+    <div class="qr" id="handQR" aria-label="QR code for the link"></div>
   </div>
 
   <div class="main">
@@ -106,6 +144,7 @@ footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-si
       <div class="done-panel" id="donePanel" hidden>
         <h3>Full house</h3>
         <p id="doneText"></p>
+        <div class="share-row"><button id="shareBtn" type="button" class="primary">Share your result</button><span class="status" id="shareStatus"></span></div>
         <p>Enjoyed it? Ten golf majors crosswords, covering every major from 2016 to 2025, are in our printable pack on <a href="https://eventsandseasons.etsy.com" target="_blank" rel="noopener">Etsy</a>. Our football, rugby and golf crossword books are on <a href="https://www.amazon.co.uk/s?k=Armchair+Pundit+Press" target="_blank" rel="noopener">Amazon</a>.</p>
       </div>
     </section>
@@ -138,7 +177,7 @@ function buildPicker(){
 function enumOf(w){return /\(\d[\d,]*\)\s*$/.test(w.clue)?'':'('+w.w.length+')';}
 function load(){
   P=PUZZLES[pidx];buildPicker();$('ptitle').textContent=P.title;
-  const g=$('grid');g.style.setProperty('--cols',P.cols);g.style.setProperty('--rows',P.rows);
+  const g=$('grid');g.style.setProperty('--cols',P.cols);g.style.setProperty('--rows',P.rows);const bd=g.parentElement;bd.style.setProperty('--cols',P.cols);bd.style.setProperty('--rows',P.rows);
   g.style.gridTemplateColumns=`repeat(${P.cols},1fr)`;g.innerHTML='';
   cells={};
   P.words.forEach(w=>{for(let i=0;i<w.w.length;i++){const r=w.r+(w.d==='D'?i:0),c=w.c+(w.d==='A'?i:0);cells[r+','+c]={ans:w.w[i]};}});
@@ -197,6 +236,29 @@ $('check').onclick=()=>{let wrong=0,empty=0;for(const k in cells){if(!state[k])e
 $('revealL').onclick=()=>{if(finished)return;const k=cur.r+','+cur.c;state[k]=cells[k].ans;cells[k].rev=true;save();render();checkDone();};
 $('revealW').onclick=()=>{const w=wordAt(cur.r,cur.c,cur.d);if(!w||finished)return;cellsOf(w).forEach(p=>{const k=p.r+','+p.c;state[k]=cells[k].ans;cells[k].rev=true;});save();render();checkDone();};
 $('clear').onclick=()=>{state={};elapsed=0;finished=false;started=null;clearInterval(timerT);for(const k in cells){delete cells[k].bad;delete cells[k].rev;}$('donePanel').hidden=true;$('status').textContent='Cleared.';save();tick();render();};
+function shareText(){const revealed=Object.values(cells).some(c=>c.rev);const d=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'});return `Injury Time Puzzles, ${d}\n${P.title}\nSolved in ${$('timer').textContent}${revealed?' (with a little help)':''}\nCan you beat it? https://injurytimepuzzles.co.uk`;}
+async function copyText(txt,statusEl,okMsg){try{await navigator.clipboard.writeText(txt);statusEl.textContent=okMsg;}catch(e){statusEl.textContent='Select the text and copy it.';}}
+$('shareBtn').onclick=async()=>{const txt=shareText();if(navigator.share){try{await navigator.share({text:txt});return;}catch(e){if(e&&e.name==='AbortError')return;}}copyText(txt,$('shareStatus'),'Copied. Paste it into a message to a friend.');};
+// carry on on another device: answers travel in the link itself, nothing stored anywhere else
+function cellOrder(){const ks=Object.keys(cells);ks.sort((a,b)=>{const[ar,ac]=a.split(',').map(Number),[br,bc]=b.split(',').map(Number);return ar-br||ac-bc;});return ks;}
+function handoffLink(){const s=cellOrder().map(k=>state[k]||'_').join('');return location.origin+location.pathname+'#c='+pidx+'-'+elapsed+'-'+s;}
+let qrLoaded=false;
+function drawQR(url){const box=$('handQR');box.innerHTML='';const go=()=>{try{new QRCode(box,{text:url,width:150,height:150,correctLevel:QRCode.CorrectLevel.M});}catch(e){box.hidden=true;}};if(window.QRCode)return go();if(qrLoaded)return;qrLoaded=true;const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';s.onload=go;s.onerror=()=>{box.hidden=true;};document.head.appendChild(s);}
+$('handBtn').onclick=()=>{const url=handoffLink();$('handLink').value=url;$('handStatus').textContent='';$('handoff').hidden=false;drawQR(url);$('handoff').scrollIntoView({block:'nearest'});};
+$('handCopy').onclick=()=>copyText($('handLink').value,$('handStatus'),'Copied.');
+$('handClose').onclick=()=>{$('handoff').hidden=true;};
+function applyHandoff(){const m=location.hash.match(/^#c=(\d+)-(\d+)-([A-Z_]+)$/);if(!m)return;const i=+m[1];if(!PUZZLES[i])return;pidx=i;P=PUZZLES[i];
+  const ks=[];P.words.forEach(w=>{for(let j=0;j<w.w.length;j++){const k=(w.r+(w.d==='D'?j:0))+','+(w.c+(w.d==='A'?j:0));if(!ks.includes(k))ks.push(k);}});
+  ks.sort((a,b)=>{const[ar,ac]=a.split(',').map(Number),[br,bc]=b.split(',').map(Number);return ar-br||ac-bc;});
+  if(ks.length!==m[3].length)return;const letters={};ks.forEach((k,j)=>{if(m[3][j]!=='_')letters[k]=m[3][j];});
+  const done=ks.every((k,j)=>{const ans=(()=>{for(const w of P.words){for(let q=0;q<w.w.length;q++){if((w.r+(w.d==='D'?q:0))+','+(w.c+(w.d==='A'?q:0))===k)return w.w[q];}}})();return letters[k]===ans;});
+  store.set('apdc-'+i,{letters,elapsed:+m[2],finished:done});
+  try{history.replaceState(null,'',location.pathname);}catch(e){}}
+// big screen for a TV or a laptop plugged into one
+function setBig(on){document.body.classList.toggle('big',on);$('bigBtn').textContent=on?'Exit big screen':'Big screen';}
+$('bigBtn').onclick=()=>{const on=!document.body.classList.contains('big');setBig(on);if(on){document.documentElement.requestFullscreen?.().catch(()=>{});}else if(document.fullscreenElement){document.exitFullscreen?.().catch(()=>{});}focusKb();};
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.body.classList.contains('big'))setBig(false);});
+applyHandoff();
 load();
 </script>
 
