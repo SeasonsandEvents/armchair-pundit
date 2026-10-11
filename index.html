@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A free daily sports crossword from The Armchair Pundit. Today: the golf majors, 2016 to 2025.">
+<meta property="og:title" content="The Armchair Pundit Daily Crossword">
+<meta property="og:description" content="A free daily sports crossword. Twelve clues, one grid, a fresh puzzle every day.">
+<title>Armchair Pundit Daily Crossword</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: a scorecard — header strip, grid as the card, clues as the column of holes beside it */
+:root{
+  --paper:#F7F8F4; --card:#FFFFFF; --ink:#16233A; --muted:#5B6474; --rule:#D5DAD0;
+  --green:#1F5B3A; --flag:#E8B931; --hi:#FCEFC4; --word:#DCEBDF; --bad:#B3261E; --block:#16233A;
+  --display:"Zilla Slab",Georgia,serif; --body:"Source Sans 3",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0F1A16; --card:#16241E; --ink:#E9EEE6; --muted:#9AA79F; --rule:#2C3D35;
+  --green:#7FC79A; --flag:#E8B931; --hi:#5A4A12; --word:#21412F; --bad:#FF8A80; --block:#0A120F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0F1A16; --card:#16241E; --ink:#E9EEE6; --muted:#9AA79F; --rule:#2C3D35;
+  --green:#7FC79A; --flag:#E8B931; --hi:#5A4A12; --word:#21412F; --bad:#FF8A80; --block:#0A120F; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:16px;padding-block:20px 48px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 16px;border-bottom:3px solid var(--green);padding-bottom:12px}
+.brand{font-family:var(--display);font-weight:700;font-size:clamp(26px,5vw,40px);line-height:1.05;text-wrap:balance;margin:0}
+.brand span{color:var(--green)}
+.meta{font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.sub{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline;margin:14px 0 18px}
+.sub h2{font-family:var(--display);font-weight:500;font-size:22px;margin:0}
+.picker{display:flex;gap:6px;flex-wrap:wrap}
+.picker button{font:600 13px var(--body);padding:6px 10px;border:1px solid var(--rule);background:var(--card);color:var(--ink);border-radius:4px;cursor:pointer}
+.picker button[aria-pressed="true"]{background:var(--green);color:var(--paper);border-color:var(--green)}
+.main{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:780px){.main{grid-template-columns:minmax(0,1fr)}}
+.board{display:flex;flex-direction:column;gap:12px;min-width:0}
+.cluebar{background:var(--green);color:var(--paper);padding:10px 12px;border-radius:4px;min-height:48px;display:flex;gap:10px;align-items:center}
+.cluebar b{font-family:var(--mono);font-weight:500;white-space:nowrap}
+.grid{display:grid;gap:0;width:min(100%,calc(var(--cols)*40px));aspect-ratio:var(--cols)/var(--rows);max-width:100%;background:var(--block);border:2px solid var(--block);touch-action:manipulation}
+.cell{position:relative;background:var(--block);border:0}
+.cell.l{background:var(--card);outline:1px solid var(--block);cursor:pointer}
+.cell.l.w{background:var(--word)}
+.cell.l.on{background:var(--flag)}
+.cell .n{position:absolute;top:1px;left:2px;font:500 clamp(7px,1.6vw,10px)/1 var(--mono);color:var(--muted)}
+.cell .ch{position:absolute;inset:0;display:grid;place-items:center;font:700 clamp(13px,3.6vw,22px)/1 var(--display);color:var(--ink);text-transform:uppercase}
+.cell.on .ch,.cell.on .n{color:#16233A}
+.cell.bad .ch{color:var(--bad)}
+.cell.rev .ch{color:var(--green)}
+.tools{display:flex;flex-wrap:wrap;gap:8px}
+.tools button{font:600 14px var(--body);padding:8px 12px;border-radius:4px;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.tools button.primary{background:var(--ink);color:var(--paper)}
+button:focus-visible,.cell:focus-visible{outline:3px solid var(--flag);outline-offset:2px}
+.timer{margin-left:auto;font:500 15px var(--mono);font-variant-numeric:tabular-nums;color:var(--muted);align-self:center}
+.clues{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;min-width:0}
+.clues h3{font:600 12px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin:0 0 6px;border-bottom:1px solid var(--rule);padding-bottom:4px}
+.clues ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.clues li{display:grid;grid-template-columns:2.2em 1fr;gap:4px;padding:5px 6px;border-radius:3px;cursor:pointer;font-size:15px}
+.clues li b{font:500 13px/1.6 var(--mono);color:var(--muted)}
+.clues li.on{background:var(--hi)}
+.clues li.done{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--rule)}
+.enum{color:var(--muted);font-size:13px}
+.done-panel{border:2px solid var(--green);border-radius:6px;padding:18px;background:var(--card);display:flex;flex-direction:column;gap:8px}
+.done-panel h3{font-family:var(--display);font-size:24px;margin:0;color:var(--green)}
+.done-panel p{margin:0;max-width:60ch}
+.done-panel a{color:var(--ink);font-weight:600}
+.status{font-size:14px;color:var(--muted);min-height:1.5em}
+#kb{position:absolute;opacity:0;width:1px;height:1px;left:-9999px;font-size:16px}
+footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+@media (prefers-reduced-motion:no-preference){.cell.l{transition:background .12s}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 class="brand">The Armchair Pundit <span>Daily Crossword</span></h1>
+    <div class="meta" id="date"></div>
+  </header>
+
+  <div class="sub">
+    <h2 id="ptitle"></h2>
+    <div class="picker" id="picker" aria-label="Choose a puzzle"></div>
+  </div>
+
+  <div class="main">
+    <section class="board">
+      <div class="cluebar" id="cluebar" aria-live="polite"></div>
+      <div class="grid" id="grid" role="grid" aria-label="Crossword grid"></div>
+      <input id="kb" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Type answers">
+      <div class="tools">
+        <button id="check" class="primary">Check</button>
+        <button id="revealL">Reveal letter</button>
+        <button id="revealW">Reveal word</button>
+        <button id="clear">Clear</button>
+        <span class="timer" id="timer">0:00</span>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="done-panel" id="donePanel" hidden>
+        <h3>Full house</h3>
+        <p id="doneText"></p>
+        <p>Enjoyed it? Ten golf majors crosswords, covering every major from 2016 to 2025, are in our printable pack on <a href="https://eventsandseasons.etsy.com" target="_blank" rel="noopener">Etsy</a>. Our football, rugby and golf crossword books are on <a href="https://www.amazon.co.uk/s?k=Armchair+Pundit+Press" target="_blank" rel="noopener">Amazon</a>.</p>
+      </div>
+    </section>
+    <section class="clues" id="clues">
+      <div><h3>Across</h3><ol id="across"></ol></div>
+      <div><h3>Down</h3><ol id="down"></ol></div>
+    </section>
+  </div>
+
+  <footer>
+    <div>A new puzzle every day. Your answers save on this device.</div>
+    <div>Majors covered: 2016 to 2025.</div>
+  </footer>
+</div>
+
+<script>
+const PUZZLES = [{"title":"Augusta and the Open, 2016\u20132025","rows":13,"cols":12,"words":[{"w":"MATSUYAMA","clue":"First Japanese man to win the Masters, in 2021","r":5,"c":0,"d":"A"},{"w":"MCILROY","clue":"Completed the career Grand Slam at Augusta in 2025","r":5,"c":0,"d":"D"},{"w":"LOWRY","clue":"Irishman who won the 2019 Open at Royal Portrush","r":1,"c":5,"d":"D"},{"w":"REED","clue":"Patrick ___, 2018 Masters champion","r":9,"c":0,"d":"A"},{"w":"STENSON","clue":"Swede who won the 2016 Open at Royal Troon","r":1,"c":3,"d":"D"},{"w":"MOLINARI","clue":"First Italian to win a major: the 2018 Open at Carnoustie","r":5,"c":7,"d":"D"},{"w":"TROON","clue":"Royal ___, Open venue in 2016 and 2024","r":2,"c":3,"d":"A"},{"w":"HARMAN","clue":"Left-hander who won the 2023 Open at Royal Liverpool","r":10,"c":6,"d":"A"},{"w":"GARCIA","clue":"Spaniard who finally won a major at Augusta in 2017","r":0,"c":1,"d":"D"},{"w":"WILLETT","clue":"Sheffield-born winner of the 2016 Masters","r":7,"c":5,"d":"A"},{"w":"MORIKAWA","clue":"Won the 2021 Open at Royal St George's on his debut","r":12,"c":4,"d":"A"},{"w":"SPIETH","clue":"American who won the 2017 Open at Royal Birkdale","r":3,"c":10,"d":"D"}]},{"title":"US Open and PGA champions","rows":14,"cols":14,"words":[{"w":"FITZPATRICK","clue":"Sheffield-born winner of the 2022 US Open at Brookline","r":6,"c":3,"d":"A"},{"w":"RAHM","clue":"Spaniard who won the 2021 US Open at Torrey Pines","r":5,"c":8,"d":"D"},{"w":"OAKMONT","clue":"Pennsylvania course that hosted the 2016 and 2025 US Opens","r":0,"c":5,"d":"D"},{"w":"SCHAUFFELE","clue":"Won the PGA Championship and the Open in 2024","r":1,"c":3,"d":"D"},{"w":"SPAUN","clue":"J.J. ___, 2025 US Open champion at Oakmont","r":1,"c":3,"d":"A"},{"w":"DECHAMBEAU","clue":"Bryson ___, US Open champion in 2020 and 2024","r":3,"c":0,"d":"A"},{"w":"MICKELSON","clue":"Oldest major winner, aged 50, at the 2021 PGA Championship","r":5,"c":11,"d":"D"},{"w":"WALKER","clue":"Jimmy ___, 2016 PGA champion","r":3,"c":13,"d":"D"},{"w":"CLARK","clue":"Wyndham ___, 2023 US Open champion","r":9,"c":2,"d":"A"},{"w":"KOEPKA","clue":"Won back-to-back US Opens in 2017 and 2018","r":1,"c":1,"d":"D"},{"w":"THOMAS","clue":"Justin ___, PGA champion in 2017 and 2022","r":11,"c":6,"d":"A"},{"w":"WOODLAND","clue":"Gary ___, 2019 US Open winner at Pebble Beach","r":13,"c":5,"d":"A"}]},{"title":"Venues and green jackets","rows":13,"cols":15,"words":[{"w":"CARNOUSTIE","clue":"Angus links that hosted the 2018 Open","r":6,"c":5,"d":"A"},{"w":"SHINNECOCK","clue":"___ Hills, scene of the 2018 US Open","r":0,"c":5,"d":"D"},{"w":"AUGUSTA","clue":"Georgia home of the Masters","r":5,"c":10,"d":"D"},{"w":"BIRKDALE","clue":"Royal ___, Southport venue of the 2017 Open","r":4,"c":7,"d":"D"},{"w":"SMITH","clue":"Cameron ___, winner of the 150th Open in 2022","r":3,"c":12,"d":"D"},{"w":"STANDREWS","clue":"Venue of the 150th Open in 2022 (2,7)","r":0,"c":14,"d":"D"},{"w":"HOYLAKE","clue":"Town that is home to Royal Liverpool, 2023 Open venue","r":1,"c":5,"d":"A"},{"w":"SCHEFFLER","clue":"Masters champion in 2022 and 2024","r":11,"c":0,"d":"A"},{"w":"PINEHURST","clue":"North Carolina venue of the 2024 US Open","r":4,"c":0,"d":"D"},{"w":"JOHNSON","clue":"Dustin ___, winner of the November 2020 Masters","r":3,"c":8,"d":"A"},{"w":"WOODS","clue":"Won a fifth green jacket in 2019","r":0,"c":1,"d":"A"},{"w":"PORTRUSH","clue":"Northern Irish home of the 2019 and 2025 Opens","r":4,"c":2,"d":"D"}]}];
+const EPOCH = Date.UTC(2026,9,11);
+function todayIndex(){const n=new Date();const d=Math.floor((Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())-EPOCH)/864e5);return ((d%PUZZLES.length)+PUZZLES.length)%PUZZLES.length;}
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const $=id=>document.getElementById(id);
+let P,cells,words,cur={r:0,c:0,d:'A'},state,timerT,started,elapsed=0,finished=false,pidx=todayIndex();
+
+$('date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+function buildPicker(){
+  const t=todayIndex();$('picker').innerHTML='';
+  PUZZLES.forEach((p,i)=>{const b=document.createElement('button');b.textContent=i===t?'Today':'Puzzle '+(i+1);b.setAttribute('aria-pressed',i===pidx);b.onclick=()=>{pidx=i;load();};$('picker').appendChild(b);});
+}
+function enumOf(w){return /\(\d[\d,]*\)\s*$/.test(w.clue)?'':'('+w.w.length+')';}
+function load(){
+  P=PUZZLES[pidx];buildPicker();$('ptitle').textContent=P.title;
+  const g=$('grid');g.style.setProperty('--cols',P.cols);g.style.setProperty('--rows',P.rows);
+  g.style.gridTemplateColumns=`repeat(${P.cols},1fr)`;g.innerHTML='';
+  cells={};
+  P.words.forEach(w=>{for(let i=0;i<w.w.length;i++){const r=w.r+(w.d==='D'?i:0),c=w.c+(w.d==='A'?i:0);cells[r+','+c]={ans:w.w[i]};}});
+  let n=0;const starts={};
+  for(let r=0;r<P.rows;r++)for(let c=0;c<P.cols;c++){const s=P.words.filter(w=>w.r===r&&w.c===c);if(s.length){n++;starts[r+','+c]=n;s.forEach(w=>w.num=n);}}
+  words=P.words.slice().sort((a,b)=>a.num-b.num);
+  const saved=store.get('apdc-'+pidx)||{};state=saved.letters||{};elapsed=saved.elapsed||0;finished=!!saved.finished;
+  for(let r=0;r<P.rows;r++)for(let c=0;c<P.cols;c++){
+    const k=r+','+c,d=document.createElement('div');d.className='cell';
+    if(cells[k]){d.classList.add('l');d.dataset.k=k;d.innerHTML=(starts[k]?`<span class="n">${starts[k]}</span>`:'')+'<span class="ch"></span>';
+      d.onclick=()=>{if(cur.r===r&&cur.c===c)toggleDir();else{cur.r=r;cur.c=c;fixDir();}focusKb();render();};cells[k].el=d;}
+    g.appendChild(d);
+  }
+  ['across','down'].forEach(id=>$(id).innerHTML='');
+  words.forEach(w=>{const li=document.createElement('li');li.innerHTML=`<b>${w.num}</b><span>${w.clue} <span class="enum">${enumOf(w)}</span></span>`;
+    li.onclick=()=>{cur={r:w.r,c:w.c,d:w.d};const e=firstEmpty(w);if(e){cur.r=e.r;cur.c=e.c;}focusKb();render();};w.li=li;$(w.d==='A'?'across':'down').appendChild(li);});
+  const f=words[0];cur={r:f.r,c:f.c,d:f.d};
+  $('donePanel').hidden=!finished;$('status').textContent='';
+  started=null;clearInterval(timerT);tick();render();if(finished)showDone();
+}
+function wordAt(r,c,d){return P.words.find(w=>w.d===d&&(d==='A'?w.r===r&&c>=w.c&&c<w.c+w.w.length:w.c===c&&r>=w.r&&r<w.r+w.w.length));}
+function fixDir(){if(!wordAt(cur.r,cur.c,cur.d))cur.d=cur.d==='A'?'D':'A';}
+function toggleDir(){const o=cur.d==='A'?'D':'A';if(wordAt(cur.r,cur.c,o))cur.d=o;}
+function cellsOf(w){return Array.from({length:w.w.length},(_,i)=>({r:w.r+(w.d==='D'?i:0),c:w.c+(w.d==='A'?i:0)}));}
+function firstEmpty(w){return cellsOf(w).find(p=>!state[p.r+','+p.c]);}
+function render(){
+  const w=wordAt(cur.r,cur.c,cur.d);const inW=new Set(w?cellsOf(w).map(p=>p.r+','+p.c):[]);
+  for(const k in cells){const c=cells[k],e=c.el;e.querySelector('.ch').textContent=state[k]||'';
+    e.classList.toggle('w',inW.has(k));e.classList.toggle('on',k===cur.r+','+cur.c);
+    e.classList.toggle('bad',!!c.bad&&!!state[k]&&state[k]!==c.ans);e.classList.toggle('rev',!!c.rev);}
+  words.forEach(x=>{x.li.classList.toggle('on',x===w);x.li.classList.toggle('done',cellsOf(x).every(p=>state[p.r+','+p.c]));});
+  if(w)$('cluebar').innerHTML=`<b>${w.num} ${w.d==='A'?'across':'down'}</b><span>${w.clue} <span style="opacity:.75">${enumOf(w)}</span></span>`;
+}
+function save(){store.set('apdc-'+pidx,{letters:state,elapsed,finished});}
+function step(dir){const w=wordAt(cur.r,cur.c,cur.d);if(!w)return;const ps=cellsOf(w);const i=ps.findIndex(p=>p.r===cur.r&&p.c===cur.c);const j=i+dir;if(j>=0&&j<ps.length){cur.r=ps[j].r;cur.c=ps[j].c;}}
+function input(ch){
+  if(finished)return;if(!started){started=Date.now()-elapsed*1000;clearInterval(timerT);timerT=setInterval(tick,1000);}
+  const k=cur.r+','+cur.c;state[k]=ch;delete cells[k].bad;step(1);save();render();checkDone();
+}
+function back(){if(finished)return;const k=cur.r+','+cur.c;if(state[k]){delete state[k];}else{step(-1);delete state[cur.r+','+cur.c];}save();render();}
+function move(dr,dc){let r=cur.r+dr,c=cur.c+dc;while(r>=0&&c>=0&&r<P.rows&&c<P.cols){if(cells[r+','+c]){cur.r=r;cur.c=c;const want=dr?'D':'A';if(wordAt(r,c,want))cur.d=want;else fixDir();render();return;}r+=dr;c+=dc;}}
+function tick(){if(started&&!finished)elapsed=Math.floor((Date.now()-started)/1000);$('timer').textContent=Math.floor(elapsed/60)+':'+String(elapsed%60).padStart(2,'0');}
+function checkDone(){for(const k in cells)if(state[k]!==cells[k].ans)return;finished=true;clearInterval(timerT);tick();save();showDone();}
+function showDone(){const revealed=Object.values(cells).some(c=>c.rev);$('doneText').textContent=`Solved in ${$('timer').textContent}${revealed?', with a little help':''}. Come back tomorrow for a fresh set of clues.`;$('donePanel').hidden=false;}
+const kb=$('kb');function focusKb(){try{kb.focus({preventScroll:true})}catch(e){kb.focus()}}
+kb.addEventListener('input',()=>{const v=kb.value.toUpperCase().replace(/[^A-Z]/g,'');kb.value='';for(const ch of v)input(ch);});
+kb.addEventListener('keydown',e=>{
+  const m={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]};
+  if(m[e.key]){e.preventDefault();move(...m[e.key]);}
+  else if(e.key==='Backspace'){e.preventDefault();back();}
+  else if(e.key===' '){e.preventDefault();toggleDir();render();}
+  else if(e.key==='Tab'){e.preventDefault();const i=words.indexOf(wordAt(cur.r,cur.c,cur.d));const w=words[(i+(e.shiftKey?-1:1)+words.length)%words.length];cur={r:w.r,c:w.c,d:w.d};render();}
+});
+$('check').onclick=()=>{let wrong=0,empty=0;for(const k in cells){if(!state[k])empty++;else if(state[k]!==cells[k].ans){cells[k].bad=true;wrong++;}}render();
+  $('status').textContent=wrong?`${wrong} letter${wrong>1?'s':''} not right yet, marked in red.`:empty?`Everything so far is correct. ${empty} square${empty>1?'s':''} to go.`:'All correct.';};
+$('revealL').onclick=()=>{if(finished)return;const k=cur.r+','+cur.c;state[k]=cells[k].ans;cells[k].rev=true;save();render();checkDone();};
+$('revealW').onclick=()=>{const w=wordAt(cur.r,cur.c,cur.d);if(!w||finished)return;cellsOf(w).forEach(p=>{const k=p.r+','+p.c;state[k]=cells[k].ans;cells[k].rev=true;});save();render();checkDone();};
+$('clear').onclick=()=>{state={};elapsed=0;finished=false;started=null;clearInterval(timerT);for(const k in cells){delete cells[k].bad;delete cells[k].rev;}$('donePanel').hidden=true;$('status').textContent='Cleared.';save();tick();render();};
+load();
+</script>
+
+</body>
+</html>
