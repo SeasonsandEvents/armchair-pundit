@@ -97,6 +97,16 @@ body.big .cell .n{font-size:calc((100dvh - 420px) / var(--rows) * .2)}
 body.big .cluebar{font-size:clamp(18px,1.6vw,30px);padding:14px 18px}
 body.big .clues li{font-size:clamp(15px,1.3vw,24px)}
 body.big .clues h3{font-size:clamp(12px,1vw,18px)}
+.shelf{margin-top:36px;border-top:1px solid var(--rule);padding-top:18px}
+.shelf h2{font-family:var(--display);font-size:24px;margin:0 0 4px}
+.shelf-sub{margin:0 0 14px;color:var(--muted);max-width:60ch}
+.shelf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.shelf-group{background:var(--card);border:1px solid var(--rule);border-radius:6px;padding:14px 16px}
+.shelf-group h3{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin:0 0 8px}
+.shelf-group ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.shelf-group a{color:var(--ink);font-weight:600}
+.shelf-group span{display:block;font-size:13px;color:var(--muted)}
+body.big .shelf{display:none}
 footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
 @media (prefers-reduced-motion:no-preference){.cell.l{transition:background .12s}}
 </style>
@@ -154,6 +164,16 @@ footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-si
       <div><h3>Down</h3><ol id="down"></ol></div>
     </section>
   </div>
+
+  <section class="shelf" aria-labelledby="shelfH">
+    <h2 id="shelfH">Our puzzle books</h2>
+    <p class="shelf-sub">Full-size crosswords, quizzes and wordsearches, one sport at a time. Printed by Amazon and lovely as gifts.</p>
+    <div class="shelf-grid">
+      <div class="shelf-group"><h3>Football</h3><ul><li><a href="https://www.amazon.co.uk/dp/B0HMP3HHW5?tag=dermcarm089-21" target="_blank" rel="noopener">Top-Flight Football Crosswords: England</a> <span>Paperback</span></li><li><a href="https://www.amazon.co.uk/dp/B0HM3N2MTG?tag=dermcarm089-21" target="_blank" rel="noopener">European Cup Crosswords</a> <span>Hardback</span></li><li><a href="https://www.amazon.co.uk/dp/B0HMFPZX4W?tag=dermcarm089-21" target="_blank" rel="noopener">Forty Years On: The Glory Era 1986–2026</a> <span>Paperback</span></li><li><a href="https://www.amazon.co.uk/dp/B0HMP3MKLD?tag=dermcarm089-21" target="_blank" rel="noopener">From Woolwich to North London</a> <span>Paperback</span></li><li><a href="https://www.amazon.co.uk/dp/B0HMP98NKX?tag=dermcarm089-21" target="_blank" rel="noopener">The Red Half of Merseyside</a> <span>Paperback</span></li></ul></div>
+      <div class="shelf-group"><h3>Golf</h3><ul><li><a href="https://www.amazon.co.uk/dp/B0HM3B25PR?tag=dermcarm089-21" target="_blank" rel="noopener">Golf Crosswords: The Majors, Year by Year</a> <span>Paperback</span></li><li><a href="https://www.amazon.de/dp/B0HMPCD996" target="_blank" rel="noopener">Golf-Kreuzworträtsel: Die Majors, Jahr für Jahr</a> <span>Taschenbuch, auf Deutsch</span></li></ul></div>
+      <div class="shelf-group"><h3>Rugby and more</h3><ul><li><a href="https://www.amazon.co.uk/dp/B0HMP6Y6H2?tag=dermcarm089-21" target="_blank" rel="noopener">The Rugby World Championships</a> <span>Hardback</span></li><li><a href="https://www.amazon.co.uk/dp/B0HM3JSVHN?tag=dermcarm089-21" target="_blank" rel="noopener">Pro Football Championship Crosswords</a> <span>Hardback</span></li><li><a href="https://www.amazon.co.uk/dp/B0HMPFZGCG?tag=dermcarm089-21" target="_blank" rel="noopener">The Big Book of Sports Crosswords</a> <span>Hardback</span></li></ul></div>
+    </div>
+  </section>
 
   <footer>
     <div>The Daily Crossword: a new puzzle every day. Your answers save on this device.</div>
@@ -230,8 +250,8 @@ function back(){if(finished)return;const k=cur.r+','+cur.c;if(state[k]){delete s
 function move(dr,dc){let r=cur.r+dr,c=cur.c+dc;while(r>=0&&c>=0&&r<P.rows&&c<P.cols){if(cells[r+','+c]){cur.r=r;cur.c=c;const want=dr?'D':'A';if(wordAt(r,c,want))cur.d=want;else fixDir();render();return;}r+=dr;c+=dc;}}
 function tick(){if(started&&!finished)elapsed=Math.floor((Date.now()-started)/1000);$('timer').textContent=Math.floor(elapsed/60)+':'+String(elapsed%60).padStart(2,'0');}
 function checkDone(){for(const k in cells)if(state[k]!==cells[k].ans)return;finished=true;clearInterval(timerT);tick();save();showDone();}
-const PROMO={golf:'Enjoyed it? Every golfing year since 1960 has its own crossword in <a href="https://www.amazon.co.uk/dp/B0HM3B25PR?tag=dermcarm089-21" target="_blank" rel="noopener">Golf Crosswords: The Majors, Year by Year</a>, and there is more golf in <a href="https://www.amazon.co.uk/dp/B0HMPFZGCG?tag=dermcarm089-21" target="_blank" rel="noopener">The Big Book of Sports Crosswords</a>. Prefer to print? Our golf pack is on <a href="https://eventsandseasons.etsy.com" target="_blank" rel="noopener">Etsy</a>.',football:'Enjoyed it? Every top-flight season since 1992–93 has its own crossword in <a href="https://www.amazon.co.uk/dp/B0HMP3HHW5?tag=dermcarm089-21" target="_blank" rel="noopener">Top-Flight Football Crosswords</a>. Club fans, try <a href="https://www.amazon.co.uk/dp/B0HMP3MKLD?tag=dermcarm089-21" target="_blank" rel="noopener">From Woolwich to North London</a> or <a href="https://www.amazon.co.uk/dp/B0HMP98NKX?tag=dermcarm089-21" target="_blank" rel="noopener">The Red Half of Merseyside</a>, or take on four sports in <a href="https://www.amazon.co.uk/dp/B0HMPFZGCG?tag=dermcarm089-21" target="_blank" rel="noopener">The Big Book of Sports Crosswords</a>.'};
-function showDone(){$('promo').innerHTML=PROMO[P.kind]||PROMO.golf;const revealed=Object.values(cells).some(c=>c.rev);$('doneText').textContent=`Solved in ${$('timer').textContent}${revealed?', with a little help':''}. Come back tomorrow for a fresh set of clues.`;$('donePanel').hidden=false;}
+const PROMO={golf:["Enjoyed it? Every golfing year since 1960 has its own crossword in <a href=\"https://www.amazon.co.uk/dp/B0HM3B25PR?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">Golf Crosswords: The Majors, Year by Year</a>.", "Enjoyed it? There is golf, football and darts in <a href=\"https://www.amazon.co.uk/dp/B0HMPFZGCG?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">The Big Book of Sports Crosswords</a>, a hardback made for gifting."],football:["Enjoyed it? Every top-flight season since 1992–93 has its own crossword in <a href=\"https://www.amazon.co.uk/dp/B0HMP3HHW5?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">Top-Flight Football Crosswords</a>.", "Enjoyed it? Seventy years of Europe's great club nights, one crossword a season, in <a href=\"https://www.amazon.co.uk/dp/B0HM3N2MTG?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">European Cup Crosswords</a>.", "Club fans, try <a href=\"https://www.amazon.co.uk/dp/B0HMP3MKLD?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">From Woolwich to North London</a>, <a href=\"https://www.amazon.co.uk/dp/B0HMP98NKX?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">The Red Half of Merseyside</a> or <a href=\"https://www.amazon.co.uk/dp/B0HMFPZX4W?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">Forty Years On</a>.", "Enjoyed it? Take on four sports in <a href=\"https://www.amazon.co.uk/dp/B0HMPFZGCG?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">The Big Book of Sports Crosswords</a>, a hardback made for gifting."]};
+function showDone(){{const L=PROMO[P.kind]||PROMO.golf;$('promo').innerHTML=L[dayNo()%L.length];}const revealed=Object.values(cells).some(c=>c.rev);$('doneText').textContent=`Solved in ${$('timer').textContent}${revealed?', with a little help':''}. Come back tomorrow for a fresh set of clues.`;$('donePanel').hidden=false;}
 const kb=$('kb');function focusKb(){try{kb.focus({preventScroll:true})}catch(e){kb.focus()}}
 kb.addEventListener('input',()=>{const v=kb.value.toUpperCase().replace(/[^A-Z]/g,'');kb.value='';for(const ch of v)input(ch);});
 kb.addEventListener('keydown',e=>{
