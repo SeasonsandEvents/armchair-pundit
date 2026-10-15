@@ -109,6 +109,17 @@ body.big .clues h3{font-size:clamp(12px,1vw,18px)}
 .shelf-group a{color:var(--ink);font-weight:600}
 .shelf-group span{display:block;font-size:13px;color:var(--muted)}
 body.big .shelf{display:none}
+.signup{margin-top:28px;border:2px solid var(--green);border-radius:6px;padding:18px;background:var(--card)}
+.signup h2{font-family:var(--display);font-size:24px;margin:0 0 4px}
+.signup p{margin:0 0 12px;color:var(--muted);max-width:60ch}
+.signup form{display:flex;gap:8px;flex-wrap:wrap}
+.signup input[type=email]{flex:1 1 220px;min-width:0;font:500 15px var(--body);padding:10px;border:1px solid var(--rule);border-radius:4px;background:var(--paper);color:var(--ink)}
+.signup button{font:600 15px var(--body);padding:10px 16px;border-radius:4px;border:1px solid var(--green);background:var(--green);color:var(--paper);cursor:pointer}
+.signup button:disabled{opacity:.6;cursor:default}
+.signup .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.signup .fine{font-size:13px;margin:10px 0 0}
+.signup .msg{font-weight:600;margin:10px 0 0;color:var(--ink)}
+body.big .signup{display:none}
 footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
 @media (prefers-reduced-motion:no-preference){.cell.l{transition:background .12s}}
 </style>
@@ -160,6 +171,7 @@ footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-si
         <p class="share-grid" id="shareGrid" aria-hidden="true"></p>
         <div class="share-row"><button id="shareBtn" type="button" class="primary">Share your result</button><a class="sbtn" id="shareWa" target="_blank" rel="noopener">WhatsApp</a><a class="sbtn" id="shareX" target="_blank" rel="noopener">X</a><a class="sbtn" id="shareFb" target="_blank" rel="noopener">Facebook</a><span class="status" id="shareStatus"></span></div>
         <p id="promo"></p>
+        <p><a href="#signup">Get a bonus crossword every Friday</a></p>
       </div>
     </section>
     <section class="clues" id="clues">
@@ -167,6 +179,18 @@ footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-si
       <div><h3>Down</h3><ol id="down"></ol></div>
     </section>
   </div>
+
+  <section class="signup" id="signup" aria-labelledby="signupH">
+    <h2 id="signupH">Fancy another crossword?</h2>
+    <p>Sign up for our Friday email: a bonus crossword, a quick teaser and news of new puzzle books. It's free, once a week, and you can stop any time.</p>
+    <form id="signupForm" novalidate>
+      <label class="hp" aria-hidden="true">Leave this empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+      <input type="email" name="email" id="signupEmail" placeholder="Your email address" autocomplete="email" required aria-label="Your email address">
+      <button type="submit" id="signupBtn">Sign me up</button>
+    </form>
+    <p class="msg" id="signupMsg" role="status" aria-live="polite"></p>
+    <p class="fine">We only use your email to send this newsletter. Every email has an unsubscribe link.</p>
+  </section>
 
   <section class="shelf" aria-labelledby="shelfH">
     <h2 id="shelfH">Our puzzle books</h2>
@@ -256,6 +280,7 @@ function tick(){if(started&&!finished)elapsed=Math.floor((Date.now()-started)/10
 function checkDone(){for(const k in cells)if(state[k]!==cells[k].ans)return;finished=true;clearInterval(timerT);tick();save();showDone();}
 const PROMO={golf:["Enjoyed it? Every golfing year since 1960 has its own crossword in <a href=\"https://www.amazon.co.uk/dp/B0HM3B25PR?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">Golf Crosswords: The Majors, Year by Year</a>.", "Enjoyed it? There is golf, football and darts in <a href=\"https://www.amazon.co.uk/dp/B0HMPFZGCG?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">The Big Book of Sports Crosswords</a>, a hardback made for gifting."],football:["Enjoyed it? Every top-flight season since 1992–93 has its own crossword in <a href=\"https://www.amazon.co.uk/dp/B0HMP3HHW5?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">Top-Flight Football Crosswords</a>.", "Enjoyed it? Seventy years of Europe's great club nights, one crossword a season, in <a href=\"https://www.amazon.co.uk/dp/B0HM3N2MTG?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">European Cup Crosswords</a>.", "Club fans, try <a href=\"https://www.amazon.co.uk/dp/B0HMP3MKLD?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">From Woolwich to North London</a>, <a href=\"https://www.amazon.co.uk/dp/B0HMP98NKX?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">The Red Half of Merseyside</a> or <a href=\"https://www.amazon.co.uk/dp/B0HMFPZX4W?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">Forty Years On</a>.", "Enjoyed it? Take on four sports in <a href=\"https://www.amazon.co.uk/dp/B0HMPFZGCG?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">The Big Book of Sports Crosswords</a>, a hardback made for gifting."]};
 function showDone(){{const L=PROMO[P.kind]||PROMO.golf;$('promo').innerHTML=L[dayNo()%L.length];}const revealed=Object.values(cells).some(c=>c.rev);$('doneText').textContent=`Solved in ${$('timer').textContent}${revealed?', with a little help':''}. Come back tomorrow for a fresh set of clues.`;$('donePanel').hidden=false;setShareLinks();}
+$('signupForm').addEventListener('submit',async ev=>{ev.preventDefault();const f=ev.target,msg=$('signupMsg'),btn=$('signupBtn'),em=$('signupEmail').value.trim();if(f.website.value)return;if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){msg.textContent='Please check that email address.';return;}btn.disabled=true;msg.textContent='Signing you up...';try{const fd=new FormData();fd.append('fields[email]',em);fd.append('ml-submit','1');fd.append('anticsrf','true');const r=await fetch('https://assets.mailerlite.com/jsonp/2594451/forms/201388225532527655/subscribe',{method:'POST',body:fd});const j=await r.json();if(j.success){f.hidden=true;msg.textContent="You're in. Look out for our email on Friday.";store.set('itp-signed',1);}else{msg.textContent='That did not go through. Please check the address and try again.';btn.disabled=false;}}catch(e){msg.textContent='Something went wrong. Please try again in a moment.';btn.disabled=false;}});
 const kb=$('kb');function focusKb(){try{kb.focus({preventScroll:true})}catch(e){kb.focus()}}
 kb.addEventListener('input',()=>{const v=kb.value.toUpperCase().replace(/[^A-Z]/g,'');kb.value='';for(const ch of v)input(ch);});
 kb.addEventListener('keydown',e=>{
