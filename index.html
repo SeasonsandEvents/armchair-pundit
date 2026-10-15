@@ -78,6 +78,8 @@ button:focus-visible,.cell:focus-visible{outline:3px solid var(--flag);outline-o
 .head-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 .head-actions button,.share-row button,.handoff button{font:600 13px var(--body);padding:6px 10px;border-radius:4px;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
 .share-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.share-row a.sbtn{font:600 13px var(--body);padding:6px 10px;border-radius:4px;border:1px solid var(--ink);color:var(--ink);text-decoration:none}
+.share-grid{font-size:20px;letter-spacing:2px;line-height:1.3;margin:2px 0 0}
 .share-row button.primary{background:var(--green);border-color:var(--green);color:var(--paper)}
 .handoff{border:1px solid var(--rule);border-radius:6px;padding:16px;background:var(--card);display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;margin-top:14px}
 .handoff .txt{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:8px}
@@ -155,7 +157,8 @@ footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-si
       <div class="done-panel" id="donePanel" hidden>
         <h3>Full house</h3>
         <p id="doneText"></p>
-        <div class="share-row"><button id="shareBtn" type="button" class="primary">Share your result</button><span class="status" id="shareStatus"></span></div>
+        <p class="share-grid" id="shareGrid" aria-hidden="true"></p>
+        <div class="share-row"><button id="shareBtn" type="button" class="primary">Share your result</button><a class="sbtn" id="shareWa" target="_blank" rel="noopener">WhatsApp</a><a class="sbtn" id="shareX" target="_blank" rel="noopener">X</a><a class="sbtn" id="shareFb" target="_blank" rel="noopener">Facebook</a><span class="status" id="shareStatus"></span></div>
         <p id="promo"></p>
       </div>
     </section>
@@ -167,11 +170,12 @@ footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-si
 
   <section class="shelf" aria-labelledby="shelfH">
     <h2 id="shelfH">Our puzzle books</h2>
-    <p class="shelf-sub">Full-size crosswords, quizzes and wordsearches, one sport at a time. Printed by Amazon and lovely as gifts.</p>
+    <p class="shelf-sub">Full-size crosswords, quizzes and wordsearches, one sport at a time. Printed by Amazon and lovely as gifts, or print-at-home packs from our Etsy shop.</p>
     <div class="shelf-grid">
       <div class="shelf-group"><h3>Football</h3><ul><li><a href="https://www.amazon.co.uk/dp/B0HMP3HHW5?tag=dermcarm089-21" target="_blank" rel="noopener">Top-Flight Football Crosswords: England</a> <span>Paperback</span></li><li><a href="https://www.amazon.co.uk/dp/B0HM3N2MTG?tag=dermcarm089-21" target="_blank" rel="noopener">European Cup Crosswords</a> <span>Hardback</span></li><li><a href="https://www.amazon.co.uk/dp/B0HMFPZX4W?tag=dermcarm089-21" target="_blank" rel="noopener">Forty Years On: The Glory Era 1986–2026</a> <span>Paperback</span></li><li><a href="https://www.amazon.co.uk/dp/B0HMP3MKLD?tag=dermcarm089-21" target="_blank" rel="noopener">From Woolwich to North London</a> <span>Paperback</span></li><li><a href="https://www.amazon.co.uk/dp/B0HMP98NKX?tag=dermcarm089-21" target="_blank" rel="noopener">The Red Half of Merseyside</a> <span>Paperback</span></li></ul></div>
       <div class="shelf-group"><h3>Golf</h3><ul><li><a href="https://www.amazon.co.uk/dp/B0HM3B25PR?tag=dermcarm089-21" target="_blank" rel="noopener">Golf Crosswords: The Majors, Year by Year</a> <span>Paperback</span></li><li><a href="https://www.amazon.de/dp/B0HMPCD996" target="_blank" rel="noopener">Golf-Kreuzworträtsel: Die Majors, Jahr für Jahr</a> <span>Taschenbuch, auf Deutsch</span></li></ul></div>
       <div class="shelf-group"><h3>Rugby and more</h3><ul><li><a href="https://www.amazon.co.uk/dp/B0HMP6Y6H2?tag=dermcarm089-21" target="_blank" rel="noopener">The Rugby World Championships</a> <span>Hardback</span></li><li><a href="https://www.amazon.co.uk/dp/B0HM3JSVHN?tag=dermcarm089-21" target="_blank" rel="noopener">Pro Football Championship Crosswords</a> <span>Hardback</span></li><li><a href="https://www.amazon.co.uk/dp/B0HMPFZGCG?tag=dermcarm089-21" target="_blank" rel="noopener">The Big Book of Sports Crosswords</a> <span>Hardback</span></li></ul></div>
+      <div class="shelf-group"><h3>Printable packs</h3><ul><li><a href="https://www.etsy.com/uk/shop/EventsAndSeasons?section_id=60779166" target="_blank" rel="noopener">Football, golf and darts crossword packs</a> <span>Instant PDF download from our Etsy shop, print at home</span></li></ul></div>
     </div>
   </section>
 
@@ -251,7 +255,7 @@ function move(dr,dc){let r=cur.r+dr,c=cur.c+dc;while(r>=0&&c>=0&&r<P.rows&&c<P.c
 function tick(){if(started&&!finished)elapsed=Math.floor((Date.now()-started)/1000);$('timer').textContent=Math.floor(elapsed/60)+':'+String(elapsed%60).padStart(2,'0');}
 function checkDone(){for(const k in cells)if(state[k]!==cells[k].ans)return;finished=true;clearInterval(timerT);tick();save();showDone();}
 const PROMO={golf:["Enjoyed it? Every golfing year since 1960 has its own crossword in <a href=\"https://www.amazon.co.uk/dp/B0HM3B25PR?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">Golf Crosswords: The Majors, Year by Year</a>.", "Enjoyed it? There is golf, football and darts in <a href=\"https://www.amazon.co.uk/dp/B0HMPFZGCG?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">The Big Book of Sports Crosswords</a>, a hardback made for gifting."],football:["Enjoyed it? Every top-flight season since 1992–93 has its own crossword in <a href=\"https://www.amazon.co.uk/dp/B0HMP3HHW5?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">Top-Flight Football Crosswords</a>.", "Enjoyed it? Seventy years of Europe's great club nights, one crossword a season, in <a href=\"https://www.amazon.co.uk/dp/B0HM3N2MTG?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">European Cup Crosswords</a>.", "Club fans, try <a href=\"https://www.amazon.co.uk/dp/B0HMP3MKLD?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">From Woolwich to North London</a>, <a href=\"https://www.amazon.co.uk/dp/B0HMP98NKX?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">The Red Half of Merseyside</a> or <a href=\"https://www.amazon.co.uk/dp/B0HMFPZX4W?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">Forty Years On</a>.", "Enjoyed it? Take on four sports in <a href=\"https://www.amazon.co.uk/dp/B0HMPFZGCG?tag=dermcarm089-21\" target=\"_blank\" rel=\"noopener\">The Big Book of Sports Crosswords</a>, a hardback made for gifting."]};
-function showDone(){{const L=PROMO[P.kind]||PROMO.golf;$('promo').innerHTML=L[dayNo()%L.length];}const revealed=Object.values(cells).some(c=>c.rev);$('doneText').textContent=`Solved in ${$('timer').textContent}${revealed?', with a little help':''}. Come back tomorrow for a fresh set of clues.`;$('donePanel').hidden=false;}
+function showDone(){{const L=PROMO[P.kind]||PROMO.golf;$('promo').innerHTML=L[dayNo()%L.length];}const revealed=Object.values(cells).some(c=>c.rev);$('doneText').textContent=`Solved in ${$('timer').textContent}${revealed?', with a little help':''}. Come back tomorrow for a fresh set of clues.`;$('donePanel').hidden=false;setShareLinks();}
 const kb=$('kb');function focusKb(){try{kb.focus({preventScroll:true})}catch(e){kb.focus()}}
 kb.addEventListener('input',()=>{const v=kb.value.toUpperCase().replace(/[^A-Z]/g,'');kb.value='';for(const ch of v)input(ch);});
 kb.addEventListener('keydown',e=>{
@@ -266,7 +270,9 @@ $('check').onclick=()=>{let wrong=0,empty=0;for(const k in cells){if(!state[k])e
 $('revealL').onclick=()=>{if(finished)return;const k=cur.r+','+cur.c;state[k]=cells[k].ans;cells[k].rev=true;save();render();checkDone();};
 $('revealW').onclick=()=>{const w=wordAt(cur.r,cur.c,cur.d);if(!w||finished)return;cellsOf(w).forEach(p=>{const k=p.r+','+p.c;state[k]=cells[k].ans;cells[k].rev=true;});save();render();checkDone();};
 $('clear').onclick=()=>{state={};elapsed=0;finished=false;started=null;clearInterval(timerT);for(const k in cells){delete cells[k].bad;delete cells[k].rev;}$('donePanel').hidden=true;$('status').textContent='Cleared.';save();tick();render();};
-function shareText(){const revealed=Object.values(cells).some(c=>c.rev);const d=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'});return `Injury Time Puzzles, ${d}\n${P.title}\nSolved in ${$('timer').textContent}${revealed?' (with a little help)':''}\nCan you beat it? https://injurytimepuzzles.co.uk`;}
+function shareGrid(){const icon=P.kind==='golf'?'\u26F3':'\u26BD';return P.words.map(w=>cellsOf(w).some(p=>cells[p.r+','+p.c].rev)?'\u{1F7E8}':icon).join('');}
+function shareText(){const revealed=Object.values(cells).some(c=>c.rev);const d=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'});return `Injury Time Puzzles, ${d}\n${P.title}\n${shareGrid()}\nSolved in ${$('timer').textContent}${revealed?' (with a little help)':''}\nCan you beat it? https://injurytimepuzzles.co.uk`;}
+function setShareLinks(){const t=shareText(),u='https://injurytimepuzzles.co.uk';$('shareGrid').textContent=shareGrid();$('shareWa').href='https://wa.me/?text='+encodeURIComponent(t);$('shareX').href='https://twitter.com/intent/tweet?text='+encodeURIComponent(t);$('shareFb').href='https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(u);}
 async function copyText(txt,statusEl,okMsg){try{await navigator.clipboard.writeText(txt);statusEl.textContent=okMsg;}catch(e){statusEl.textContent='Select the text and copy it.';}}
 $('shareBtn').onclick=async()=>{const txt=shareText();if(navigator.share){try{await navigator.share({text:txt});return;}catch(e){if(e&&e.name==='AbortError')return;}}copyText(txt,$('shareStatus'),'Copied. Paste it into a message to a friend.');};
 // carry on on another device: answers travel in the link itself, nothing stored anywhere else
