@@ -320,6 +320,7 @@ function setBig(on){document.body.classList.toggle('big',on);$('bigBtn').textCon
 $('bigBtn').onclick=()=>{const on=!document.body.classList.contains('big');setBig(on);if(on){document.documentElement.requestFullscreen?.().catch(()=>{});}else if(document.fullscreenElement){document.exitFullscreen?.().catch(()=>{});}focusKb();};
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.body.classList.contains('big'))setBig(false);});
 applyHandoff();
+{const m=location.hash.match(/^#p=(\d+)$/);if(m&&PUZZLES[+m[1]])pidx=+m[1];}
 load();
 </script>
 
