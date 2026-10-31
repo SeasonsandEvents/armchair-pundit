@@ -230,6 +230,26 @@ archive = f"""<!doctype html>
 """
 (out_dir / "index.html").write_text(archive, encoding="utf-8")
 
+# --- embed page: today's crossword for other sites to show in an iframe -------
+EMBED_CSS = """<style>
+header,.sub .picker select,.allp,.handoff,#handBtn,#bigBtn,.signup,.shelf,.done-panel p a[href="#signup"]{display:none!important}
+.wrap{padding-block:8px 8px}.sub{margin:4px 0 10px}
+.embed-foot{margin-top:12px;font-size:14px;text-align:center;color:var(--muted)}
+.embed-foot a{color:var(--green);font-weight:600}
+</style>"""
+embed = set_meta(home, f"{SITE}/", "Injury Time Puzzles: the Daily Crossword",
+                 "A free daily sports crossword from Injury Time Puzzles.", f"{SITE}/pins/daily.png")
+embed = embed.replace("<title>", '<meta name="robots" content="noindex">\n<base target="_blank">\n<title>', 1)
+embed = embed.replace("</style>", "</style>\n" + EMBED_CSS, 1)
+embed = embed.replace(
+    '<section class="signup"',
+    '<p class="embed-foot">A free sports crossword every day from '
+    '<a href="https://injurytimepuzzles.co.uk/?utm_source=embed" rel="noopener">Injury Time Puzzles</a>'
+    ' &middot; <a href="https://injurytimepuzzles.co.uk/puzzles/?utm_source=embed" rel="noopener">every season so far</a></p>\n'
+    '  <section class="signup"', 1)
+(ROOT / "embed").mkdir(exist_ok=True)
+(ROOT / "embed" / "index.html").write_text(embed, encoding="utf-8")
+
 # --- sitemap -----------------------------------------------------------------
 urls = [(f"{SITE}/", "daily"), (f"{SITE}/puzzles/", "weekly")] + \
        [(f"{SITE}/puzzles/{s}/", "monthly") for s in SLUGS]
