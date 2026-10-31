@@ -7,8 +7,10 @@
 <link rel="canonical" href="https://injurytimepuzzles.co.uk/">
 <meta property="og:url" content="https://injurytimepuzzles.co.uk/">
 <meta property="og:title" content="Injury Time Puzzles: the Daily Crossword">
-<meta property="og:description" content="A free daily sports crossword. Twelve clues, one grid, a fresh puzzle every day.">
-<title>Injury Time Puzzles</title>
+<meta property="og:description" content="A free daily sports crossword from Injury Time Puzzles. Twelve clues, one grid, a fresh puzzle every day.">
+<meta property="og:image" content="https://injurytimepuzzles.co.uk/pins/daily.png">
+<meta name="twitter:card" content="summary_large_image">
+<title>Injury Time Puzzles: the Daily Crossword</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
@@ -122,6 +124,7 @@ body.big .shelf{display:none}
 body.big .signup{display:none}
 footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
 @media (prefers-reduced-motion:no-preference){.cell.l{transition:background .12s}}
+.intro{max-width:72ch;color:var(--muted);margin:-6px 0 16px}.allp{margin:-8px 0 14px;font-size:14px}.allp a,.intro a{color:var(--green)}
 </style>
 
 </head>
@@ -142,6 +145,7 @@ footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-si
     <h2 id="ptitle"></h2>
     <div class="picker" id="picker" aria-label="Choose a puzzle"></div>
   </div>
+  <p class="allp"><a href="/puzzles/">Every crossword so far</a></p>
   <div class="handoff" id="handoff" hidden>
     <div class="txt">
       <h3>Carry on on another device</h3>
@@ -224,11 +228,11 @@ $('date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:
 
 function buildPicker(){
   const t=todayIndex(),dn=dayNo();$('picker').innerHTML='';
-  const b=document.createElement('button');b.type='button';b.textContent='Today';b.setAttribute('aria-pressed',pidx===t);b.onclick=()=>{pidx=t;load();};$('picker').appendChild(b);
+  const b=document.createElement('button');b.type='button';b.textContent='Today';b.setAttribute('aria-pressed',pidx===t);b.onclick=()=>{if(typeof window.ITP_FIXED==='number'){location.href='/';return;}pidx=t;load();};$('picker').appendChild(b);
   if(dn>0){const s=document.createElement('select');s.id='archive';s.setAttribute('aria-label','Earlier puzzles');
     const o0=document.createElement('option');o0.value='';o0.textContent='Earlier puzzles';s.appendChild(o0);
     for(let d=dn-1;d>=Math.max(0,dn-30);d--){const i=idxForDay(d);if(i===t)continue;const o=document.createElement('option');o.value=i;
-      o.textContent=new Date(EPOCH+d*864e5).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+': '+PUZZLES[i].title;if(i===pidx)o.selected=true;s.appendChild(o);}
+      o.textContent=new Date(EPOCH+d*864e5).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'})+': '+PUZZLES[i].title;if(i===pidx)o.selected=true;s.appendChild(o);}
     s.onchange=()=>{if(s.value!==''){pidx=+s.value;load();}};$('picker').appendChild(s);}
 }
 function enumOf(w){return /\(\d[\d,]*\)\s*$/.test(w.clue)?'':'('+(w.enum||w.w.length)+')';}
