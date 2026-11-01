@@ -133,6 +133,29 @@ footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-si
 .intro{max-width:72ch;color:var(--muted);margin:-6px 0 16px}.allp{margin:-8px 0 14px;font-size:14px}.allp a,.intro a{color:var(--green)}
 
 .install{margin:6px 0 0;text-align:center;font-size:15px;color:var(--muted)}.install button{font:600 15px var(--body);color:#fff;background:var(--green);border:0;border-radius:10px;padding:9px 16px;cursor:pointer}
+
+.printsheet{display:none}
+@media print{
+  @page{size:A4;margin:12mm}
+  html,body{background:#fff!important;color:#000!important}
+  .wrap>*:not(#printSheet){display:none!important}
+  .wrap{padding:0!important;max-width:none!important}
+  .printsheet{display:block!important;font-family:var(--body);color:#000}
+  .ps-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #1F5B3A;padding-bottom:4px;margin-bottom:8px}
+  .ps-brand{font:700 20pt var(--display);color:#000}.ps-brand span{color:#1F5B3A}
+  .ps-date{font:500 10pt var(--mono);color:#333}
+  .ps-title{font:600 16pt var(--display);margin:2px 0 10px}
+  .ps-grid{border-collapse:collapse;margin:0 auto 12px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .ps-grid td{border:1px solid #000;padding:0;position:relative;text-align:center;vertical-align:middle;font:600 13pt var(--body)}
+  .ps-grid td.b{background:#000}
+  .ps-grid td .n{position:absolute;top:1px;left:2px;font:600 6.5pt var(--body)}
+  .ps-clues{display:grid;grid-template-columns:1fr 1fr;gap:6mm;font-size:10pt;line-height:1.35}
+  .ps-clues h3{font:700 11pt var(--display);margin:0 0 3px}
+  .ps-clues ol{list-style:none;padding:0;margin:0}.ps-clues li{margin:0 0 3px;break-inside:avoid}.ps-clues b{display:inline-block;min-width:1.6em}
+  .ps-foot{display:flex;gap:6mm;align-items:center;border-top:1px solid #999;margin-top:8mm;padding-top:4mm;break-inside:avoid}
+  .ps-qr{width:28mm;height:28mm;flex:none}.ps-qr img,.ps-qr canvas{width:28mm!important;height:28mm!important}
+  .ps-foot p{margin:0 0 2px;font-size:10pt}.ps-foot strong{font-size:11pt}
+}
 </style>
 
 </head>
@@ -145,6 +168,7 @@ footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-si
       <div class="head-actions">
         <button id="bigBtn" type="button">Big screen</button>
         <button id="handBtn" type="button">Carry on on another device</button>
+        <button id="printBtn" type="button">Print</button>
       </div>
     </div>
   </header>
@@ -165,6 +189,7 @@ footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-si
     <div class="qr" id="handQR" aria-label="QR code for the link"></div>
   </div>
 
+  <section class="printsheet" id="printSheet" aria-hidden="true"></section>
   <div class="main">
     <section class="board">
       <div class="cluebar" id="cluebar" aria-live="polite"></div>
@@ -332,6 +357,28 @@ function applyHandoff(){const m=location.hash.match(/^#c=(\d+)-(\d+)-([A-Z_]+)$/
 function setBig(on){document.body.classList.toggle('big',on);$('bigBtn').textContent=on?'Exit big screen':'Big screen';}
 $('bigBtn').onclick=()=>{const on=!document.body.classList.contains('big');setBig(on);if(on){document.documentElement.requestFullscreen?.().catch(()=>{});}else if(document.fullscreenElement){document.exitFullscreen?.().catch(()=>{});}focusKb();};
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.body.classList.contains('big'))setBig(false);});
+// printable A4 sheet: grid with the letters so far, all clues, and a QR code back to this puzzle online
+function loadQR(cb){if(window.QRCode)return cb();const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';s.onload=cb;s.onerror=cb;document.head.appendChild(s);}
+function buildSheet(){
+  const sh=$('printSheet');sh.innerHTML='';const el=(t,c,txt)=>{const e=document.createElement(t);if(c)e.className=c;if(txt!=null)e.textContent=txt;return e;};
+  const hd=el('div','ps-head');const br=el('div','ps-brand');br.innerHTML='Injury Time <span>Puzzles</span>';hd.appendChild(br);hd.appendChild(el('div','ps-date',$('date').textContent));sh.appendChild(hd);
+  sh.appendChild(el('div','ps-title',P.title));
+  const size=Math.min(150/P.cols,125/P.rows,11);const tb=el('table','ps-grid');const nums={};words.forEach(w=>{nums[w.r+','+w.c]=w.num;});
+  for(let r=0;r<P.rows;r++){const tr=document.createElement('tr');for(let c=0;c<P.cols;c++){const k=r+','+c,td=document.createElement('td');td.style.width=td.style.height=size+'mm';
+    if(!cells[k])td.className='b';else{if(nums[k])td.appendChild(el('span','n',String(nums[k])));if(state[k])td.appendChild(document.createTextNode(state[k]));}tr.appendChild(td);}tb.appendChild(tr);}
+  sh.appendChild(tb);
+  const cl=el('div','ps-clues');['A','D'].forEach(d=>{const col=document.createElement('div');col.appendChild(el('h3','',d==='A'?'Across':'Down'));const ol=document.createElement('ol');
+    words.filter(w=>w.d===d).forEach(w=>{const li=document.createElement('li');li.appendChild(el('b','',String(w.num)));li.appendChild(document.createTextNode(w.clue+' '+enumOf(w)));ol.appendChild(li);});col.appendChild(ol);cl.appendChild(col);});
+  sh.appendChild(cl);
+  const ft=el('div','ps-foot');const q=el('div','ps-qr');ft.appendChild(q);const tx=document.createElement('div');
+  tx.appendChild(el('p','','')).appendChild(el('strong','','Scan to carry on online'));
+  tx.appendChild(el('p','','The code opens this puzzle with the letters shown above already filled in, so you can check your answers or finish it on your phone.'));
+  tx.appendChild(el('p','','A new free crossword every day at injurytimepuzzles.co.uk'));ft.appendChild(tx);sh.appendChild(ft);
+  if(window.QRCode){try{new QRCode(q,{text:handoffLink(),width:200,height:200,correctLevel:QRCode.CorrectLevel.M});}catch(e){q.remove();}}else q.remove();
+}
+$('printBtn').onclick=()=>{loadQR(()=>{buildSheet();setTimeout(()=>window.print(),300);});};
+addEventListener('beforeprint',()=>{if(!$('printSheet').childElementCount)buildSheet();});
+addEventListener('afterprint',()=>{$('printSheet').innerHTML='';});
 window.ITP_FIXED=6;pidx=6;
 applyHandoff();
 {const m=location.hash.match(/^#p=(\d+)$/);if(m&&PUZZLES[+m[1]])pidx=+m[1];}
