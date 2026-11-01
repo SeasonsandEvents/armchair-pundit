@@ -2,7 +2,7 @@
 // and still open when the phone is offline.
 // Network first, so a player always gets today's crossword when online; the cached
 // copy is only used when there is no connection.
-const CACHE = "itp-v1";
+const CACHE = "itp-v2";
 const START = ["/", "/manifest.webmanifest", "/icons/icon-192.png"];
 
 self.addEventListener("install", (e) => {
@@ -21,7 +21,7 @@ self.addEventListener("fetch", (e) => {
   const req = e.request;
   if (req.method !== "GET" || new URL(req.url).origin !== self.location.origin) return;
   e.respondWith(
-    fetch(req)
+    fetch(req, { cache: "no-cache" })
       .then((res) => {
         if (res.ok) {
           const copy = res.clone();
