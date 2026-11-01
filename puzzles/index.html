@@ -10,6 +10,12 @@
 <meta property="og:description" content="Every free crossword from Injury Time Puzzles: a crossword for each season of England&#x27;s top flight since 1992–93, plus golf&#x27;s majors. Play any of them online.">
 <meta property="og:image" content="https://injurytimepuzzles.co.uk/pins/daily.png">
 <title>Football and Golf Crosswords, Season by Season</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#1F5B3A">
+<link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Injury Time">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
@@ -124,6 +130,8 @@ body.big .signup{display:none}
 footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
 @media (prefers-reduced-motion:no-preference){.cell.l{transition:background .12s}}
 .intro{max-width:72ch;color:var(--muted);margin:-6px 0 16px}.allp{margin:-8px 0 14px;font-size:14px}.allp a,.intro a{color:var(--green)}
+
+.install{margin:6px 0 0;text-align:center;font-size:15px;color:var(--muted)}.install button{font:600 15px var(--body);color:#fff;background:var(--green);border:0;border-radius:10px;padding:9px 16px;cursor:pointer}
 </style>
 <style>.arch h2{font-family:var(--display);font-weight:500;font-size:22px;margin:22px 0 8px}
 .arch ul{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px 18px}
@@ -143,5 +151,6 @@ footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-si
     <ul><li><a href="/puzzles/golf-augusta-and-the-open-2016-2025/">Augusta and the Open, 2016–2025</a></li><li><a href="/puzzles/golf-us-open-and-pga-champions/">US Open and PGA champions</a></li><li><a href="/puzzles/golf-venues-and-green-jackets/">Venues and green jackets</a></li></ul>
   </main>
 </div>
+<script>if("serviceWorker" in navigator){addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){})})}</script>
 </body>
 </html>

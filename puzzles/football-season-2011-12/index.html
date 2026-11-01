@@ -11,6 +11,12 @@
 <meta property="og:image" content="https://injurytimepuzzles.co.uk/pins/football-season-2011-12.png">
 <meta name="twitter:card" content="summary_large_image">
 <title>2011–12 Football Crossword: England&#x27;s Top Flight</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#1F5B3A">
+<link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Injury Time">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
@@ -125,6 +131,8 @@ body.big .signup{display:none}
 footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
 @media (prefers-reduced-motion:no-preference){.cell.l{transition:background .12s}}
 .intro{max-width:72ch;color:var(--muted);margin:-6px 0 16px}.allp{margin:-8px 0 14px;font-size:14px}.allp a,.intro a{color:var(--green)}
+
+.install{margin:6px 0 0;text-align:center;font-size:15px;color:var(--muted)}.install button{font:600 15px var(--body);color:#fff;background:var(--green);border:0;border-radius:10px;padding:9px 16px;cursor:pointer}
 </style>
 
 </head>
@@ -146,6 +154,7 @@ footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-si
     <div class="picker" id="picker" aria-label="Choose a puzzle"></div>
   </div>
   <p class="allp"><a href="/puzzles/">Every crossword so far</a> &middot; <a href="/football-general-knowledge-quiz/">Football general knowledge quiz</a></p>
+  <p class="install" id="installRow" hidden><button type="button" id="installBtn">Add to your home screen</button> <span id="installHint"></span></p>
   <div class="handoff" id="handoff" hidden>
     <div class="txt">
       <h3>Carry on on another device</h3>
@@ -329,5 +338,7 @@ applyHandoff();
 load();
 </script>
 
+<script>(function(){var row=document.getElementById("installRow"),btn=document.getElementById("installBtn"),hint=document.getElementById("installHint"),ev=null;var standalone=matchMedia("(display-mode: standalone)").matches||navigator.standalone;if(standalone||!row)return;addEventListener("beforeinstallprompt",function(e){e.preventDefault();ev=e;row.hidden=false});btn.addEventListener("click",function(){if(ev){ev.prompt();ev.userChoice.finally(function(){row.hidden=true;ev=null})}});var ios=/iphone|ipad|ipod/i.test(navigator.userAgent);if(ios){btn.hidden=true;row.hidden=false;hint.textContent="Play it like an app: tap the Share button, then Add to Home Screen."}})();</script>
+<script>if("serviceWorker" in navigator){addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){})})}</script>
 </body>
 </html>

@@ -20,6 +20,15 @@ TODAY = date.today().isoformat()
 src = (ROOT / "index.html").read_text(encoding="utf-8")
 
 
+# --- home-screen app tags for pages that do not inherit the home page head ----
+APP_HEAD = '<link rel="manifest" href="/manifest.webmanifest">\n<meta name="theme-color" content="#1F5B3A">\n<link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png">\n<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">\n<meta name="apple-mobile-web-app-capable" content="yes">\n<meta name="apple-mobile-web-app-title" content="Injury Time">\n'
+APP_SW = '<script>if("serviceWorker" in navigator){addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){})})}</script>\n'
+
+
+def app(page):
+    return page.replace("</title>\n", "</title>\n" + APP_HEAD, 1).replace("</body>", APP_SW + "</body>", 1)
+
+
 def puzzles_from(page):
     a = page.index("const PUZZLES = ") + len("const PUZZLES = ")
     e = page.index("const EPOCH")
@@ -229,11 +238,11 @@ archive = f"""<!doctype html>
 </body>
 </html>
 """
-(out_dir / "index.html").write_text(archive, encoding="utf-8")
+(out_dir / "index.html").write_text(app(archive), encoding="utf-8")
 
 # --- embed page: today's crossword for other sites to show in an iframe -------
 EMBED_CSS = """<style>
-header,.sub .picker select,.allp,.handoff,#handBtn,#bigBtn,.signup,.shelf,.done-panel p a[href="#signup"]{display:none!important}
+header,.sub .picker select,.allp,.install,.handoff,#handBtn,#bigBtn,.signup,.shelf,.done-panel p a[href="#signup"]{display:none!important}
 .wrap{padding-block:8px 8px}.sub{margin:4px 0 10px}
 .embed-foot{margin-top:12px;font-size:14px;text-align:center;color:var(--muted)}
 .embed-foot a{color:var(--green);font-weight:600}
@@ -254,7 +263,7 @@ embed = embed.replace(
 # --- football general knowledge quiz -----------------------------------------
 import quiz_page
 (ROOT / quiz_page.SLUG).mkdir(exist_ok=True)
-(ROOT / quiz_page.SLUG / "index.html").write_text(quiz_page.build(SITE, fonts, style, src[src.index('<section class="shelf"'):src.index("</section>", src.index('<section class="shelf"')) + 10]), encoding="utf-8")
+(ROOT / quiz_page.SLUG / "index.html").write_text(app(quiz_page.build(SITE, fonts, style, src[src.index('<section class="shelf"'):src.index("</section>", src.index('<section class="shelf"')) + 10])), encoding="utf-8")
 
 # --- sitemap -----------------------------------------------------------------
 urls = [(f"{SITE}/", "daily"), (f"{SITE}/puzzles/", "weekly"),
