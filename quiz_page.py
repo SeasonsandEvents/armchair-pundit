@@ -60,7 +60,7 @@ QUIZ_CSS = """<style>
 </style>"""
 
 
-def build(site, fonts, style):
+def build(site, fonts, style, shelf=""):
     n = 0
     body = []
     for heading, qs in ROUNDS:
@@ -99,9 +99,8 @@ def build(site, fonts, style):
     {"".join(body)}
     <h2>Fancy more?</h2>
     <p class="more">There is a free 12-clue sports crossword every day on the <a href="/">home page</a>,
-    and a crossword for <a href="/puzzles/">every top-flight season since 1992</a>. For a whole book of
-    football crosswords and quizzes, try <a href="https://www.amazon.co.uk/dp/B0HMP3HHW5?tag=dermcarm089-21"
-    target="_blank" rel="noopener sponsored">Top-Flight Football Crosswords: England</a>, printed by Amazon.</p>
+    and a crossword for <a href="/puzzles/">every top-flight season since 1992</a>.</p>
+    {shelf}
   </main>
 </div>
 </body>

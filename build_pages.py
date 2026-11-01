@@ -254,7 +254,7 @@ embed = embed.replace(
 # --- football general knowledge quiz -----------------------------------------
 import quiz_page
 (ROOT / quiz_page.SLUG).mkdir(exist_ok=True)
-(ROOT / quiz_page.SLUG / "index.html").write_text(quiz_page.build(SITE, fonts, style), encoding="utf-8")
+(ROOT / quiz_page.SLUG / "index.html").write_text(quiz_page.build(SITE, fonts, style, src[src.index('<section class="shelf"'):src.index("</section>", src.index('<section class="shelf"')) + 10]), encoding="utf-8")
 
 # --- sitemap -----------------------------------------------------------------
 urls = [(f"{SITE}/", "daily"), (f"{SITE}/puzzles/", "weekly"),
