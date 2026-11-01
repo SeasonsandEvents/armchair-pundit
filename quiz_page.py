@@ -81,7 +81,8 @@ def build(site, fonts, style):
 <meta property="og:url" content="{url}">
 <meta property="og:title" content="{html.escape(TITLE)}">
 <meta property="og:description" content="{html.escape(DESC)}">
-<meta property="og:image" content="{site}/pins/daily.png">
+<meta property="og:image" content="{site}/pins/football-quiz.png">
+<meta name="twitter:card" content="summary_large_image">
 <title>{html.escape(TITLE)}</title>
 {fonts}
 {style}
