@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A free football general knowledge quiz: 30 questions and answers on England&#x27;s top flight from 1992 to today. Tap to reveal each answer and keep score.">
+<link rel="canonical" href="https://injurytimepuzzles.co.uk/football-general-knowledge-quiz/">
+<meta property="og:url" content="https://injurytimepuzzles.co.uk/football-general-knowledge-quiz/">
+<meta property="og:title" content="Football General Knowledge Quiz: 30 Questions and Answers">
+<meta property="og:description" content="A free football general knowledge quiz: 30 questions and answers on England&#x27;s top flight from 1992 to today. Tap to reveal each answer and keep score.">
+<meta property="og:image" content="https://injurytimepuzzles.co.uk/pins/daily.png">
+<title>Football General Knowledge Quiz: 30 Questions and Answers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: a scorecard — header strip, grid as the card, clues as the column of holes beside it */
+:root{
+  --paper:#F7F8F4; --card:#FFFFFF; --ink:#16233A; --muted:#5B6474; --rule:#D5DAD0;
+  --green:#1F5B3A; --flag:#E8B931; --hi:#FCEFC4; --word:#DCEBDF; --bad:#B3261E; --block:#16233A;
+  --display:"Zilla Slab",Georgia,serif; --body:"Source Sans 3",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0F1A16; --card:#16241E; --ink:#E9EEE6; --muted:#9AA79F; --rule:#2C3D35;
+  --green:#7FC79A; --flag:#E8B931; --hi:#5A4A12; --word:#21412F; --bad:#FF8A80; --block:#0A120F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0F1A16; --card:#16241E; --ink:#E9EEE6; --muted:#9AA79F; --rule:#2C3D35;
+  --green:#7FC79A; --flag:#E8B931; --hi:#5A4A12; --word:#21412F; --bad:#FF8A80; --block:#0A120F; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:16px;padding-block:20px 48px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 16px;border-bottom:3px solid var(--green);padding-bottom:12px}
+.brand{font-family:var(--display);font-weight:700;font-size:clamp(26px,5vw,40px);line-height:1.05;text-wrap:balance;margin:0}
+.brand span{color:var(--green)}
+.meta{font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.sub{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline;margin:14px 0 18px}
+.sub h2{font-family:var(--display);font-weight:500;font-size:22px;margin:0}
+.picker{display:flex;gap:6px;flex-wrap:wrap}
+.picker button{font:600 13px var(--body);padding:6px 10px;border:1px solid var(--rule);background:var(--card);color:var(--ink);border-radius:4px;cursor:pointer}
+.picker select{font:600 13px var(--body);padding:6px 8px;border:1px solid var(--rule);background:var(--card);color:var(--ink);border-radius:4px;max-width:100%}
+.picker button[aria-pressed="true"]{background:var(--green);color:var(--paper);border-color:var(--green)}
+.main{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:780px){.main{grid-template-columns:minmax(0,1fr)}}
+.board{display:flex;flex-direction:column;gap:12px;min-width:0}
+.cluebar{background:var(--green);color:var(--paper);padding:10px 12px;border-radius:4px;min-height:48px;display:flex;gap:10px;align-items:center}
+.cluebar b{font-family:var(--mono);font-weight:500;white-space:nowrap}
+.grid{display:grid;gap:0;width:min(100%,calc(var(--cols)*40px));aspect-ratio:var(--cols)/var(--rows);max-width:100%;background:var(--block);border:2px solid var(--block);touch-action:manipulation}
+.cell{position:relative;background:var(--block);border:0}
+.cell.l{background:var(--card);outline:1px solid var(--block);cursor:pointer}
+.cell.l.w{background:var(--word)}
+.cell.l.on{background:var(--flag)}
+.cell .n{position:absolute;top:1px;left:2px;font:500 clamp(7px,1.6vw,10px)/1 var(--mono);color:var(--muted)}
+.cell .ch{position:absolute;inset:0;display:grid;place-items:center;font:700 clamp(13px,3.6vw,22px)/1 var(--display);color:var(--ink);text-transform:uppercase}
+.cell.on .ch,.cell.on .n{color:#16233A}
+.cell.bad .ch{color:var(--bad)}
+.cell.rev .ch{color:var(--green)}
+.tools{display:flex;flex-wrap:wrap;gap:8px}
+.tools button{font:600 14px var(--body);padding:8px 12px;border-radius:4px;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.tools button.primary{background:var(--ink);color:var(--paper)}
+button:focus-visible,.cell:focus-visible{outline:3px solid var(--flag);outline-offset:2px}
+.timer{margin-left:auto;font:500 15px var(--mono);font-variant-numeric:tabular-nums;color:var(--muted);align-self:center}
+.clues{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;min-width:0}
+.clues h3{font:600 12px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin:0 0 6px;border-bottom:1px solid var(--rule);padding-bottom:4px}
+.clues ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.clues li{display:grid;grid-template-columns:2.2em 1fr;gap:4px;padding:5px 6px;border-radius:3px;cursor:pointer;font-size:15px}
+.clues li b{font:500 13px/1.6 var(--mono);color:var(--muted)}
+.clues li.on{background:var(--hi)}
+.clues li.done{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--rule)}
+.enum{color:var(--muted);font-size:13px}
+.done-panel{border:2px solid var(--green);border-radius:6px;padding:18px;background:var(--card);display:flex;flex-direction:column;gap:8px}
+.done-panel h3{font-family:var(--display);font-size:24px;margin:0;color:var(--green)}
+.done-panel p{margin:0;max-width:60ch}
+.done-panel a{color:var(--ink);font-weight:600}
+.status{font-size:14px;color:var(--muted);min-height:1.5em}
+#kb{position:absolute;opacity:0;width:1px;height:1px;left:-9999px;font-size:16px}
+.head-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.head-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.head-actions button,.share-row button,.handoff button{font:600 13px var(--body);padding:6px 10px;border-radius:4px;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.share-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.share-row a.sbtn{font:600 13px var(--body);padding:6px 10px;border-radius:4px;border:1px solid var(--ink);color:var(--ink);text-decoration:none}
+.share-grid{font-size:20px;letter-spacing:2px;line-height:1.3;margin:2px 0 0}
+.share-row button.primary{background:var(--green);border-color:var(--green);color:var(--paper)}
+.handoff{border:1px solid var(--rule);border-radius:6px;padding:16px;background:var(--card);display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;margin-top:14px}
+.handoff .txt{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.handoff h3{font-family:var(--display);font-size:20px;margin:0}
+.handoff p{margin:0;font-size:14px;color:var(--muted);max-width:60ch}
+.handoff input{width:100%;font:500 13px var(--mono);padding:8px;border:1px solid var(--rule);border-radius:4px;background:var(--paper);color:var(--ink)}
+.handoff .qr{background:#fff;padding:8px;border-radius:4px;line-height:0}
+@media (max-width:780px){#bigBtn{display:none}}
+body.big .wrap{max-width:none;padding-inline:3vw;padding-block:12px 12px}
+body.big .picker,body.big footer,body.big .head-actions #handBtn{display:none}
+body.big .sub{margin:8px 0 12px}
+body.big .main{gap:3vw}
+body.big .board{width:min(calc((100dvh - 420px) * var(--cols) / var(--rows)),62vw)}
+body.big .grid{width:100%}
+body.big .cell .ch{font-size:calc((100dvh - 420px) / var(--rows) * .58)}
+body.big .cell .n{font-size:calc((100dvh - 420px) / var(--rows) * .2)}
+body.big .cluebar{font-size:clamp(18px,1.6vw,30px);padding:14px 18px}
+body.big .clues li{font-size:clamp(15px,1.3vw,24px)}
+body.big .clues h3{font-size:clamp(12px,1vw,18px)}
+.shelf{margin-top:36px;border-top:1px solid var(--rule);padding-top:18px}
+.shelf h2{font-family:var(--display);font-size:24px;margin:0 0 4px}
+.shelf-sub{margin:0 0 14px;color:var(--muted);max-width:60ch}
+.shelf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.shelf-group{background:var(--card);border:1px solid var(--rule);border-radius:6px;padding:14px 16px}
+.shelf-group h3{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin:0 0 8px}
+.shelf-group ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.shelf-group a{color:var(--ink);font-weight:600}
+.shelf-group span{display:block;font-size:13px;color:var(--muted)}
+body.big .shelf{display:none}
+.signup{margin-top:28px;border:2px solid var(--green);border-radius:6px;padding:18px;background:var(--card)}
+.signup h2{font-family:var(--display);font-size:24px;margin:0 0 4px}
+.signup p{margin:0 0 12px;color:var(--muted);max-width:60ch}
+.signup form{display:flex;gap:8px;flex-wrap:wrap}
+.signup input[type=email]{flex:1 1 220px;min-width:0;font:500 15px var(--body);padding:10px;border:1px solid var(--rule);border-radius:4px;background:var(--paper);color:var(--ink)}
+.signup button{font:600 15px var(--body);padding:10px 16px;border-radius:4px;border:1px solid var(--green);background:var(--green);color:var(--paper);cursor:pointer}
+.signup button:disabled{opacity:.6;cursor:default}
+.signup .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.signup .fine{font-size:13px;margin:10px 0 0}
+.signup .msg{font-weight:600;margin:10px 0 0;color:var(--ink)}
+body.big .signup{display:none}
+footer{margin-top:36px;border-top:1px solid var(--rule);padding-top:14px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+@media (prefers-reduced-motion:no-preference){.cell.l{transition:background .12s}}
+.intro{max-width:72ch;color:var(--muted);margin:-6px 0 16px}.allp{margin:-8px 0 14px;font-size:14px}.allp a,.intro a{color:var(--green)}
+</style>
+<style>
+.quiz p{max-width:72ch}.quiz .lede{color:var(--muted)}
+.quiz h2{font-family:var(--display);font-weight:500;font-size:22px;margin:26px 0 8px}
+.quiz ol{padding-left:1.4em;margin:0}.quiz li{margin:0 0 14px;max-width:72ch}
+.quiz details{margin-top:4px}.quiz summary{cursor:pointer;color:var(--green);font-weight:600;width:max-content}
+.quiz details p{margin:4px 0 0;font-weight:700}
+.quiz .more a{color:var(--green);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1 class="brand"><a href="/" style="color:inherit;text-decoration:none">Injury Time <span>Puzzles</span></a></h1></header>
+  <main class="quiz">
+    <h1 style="font-family:var(--display);font-weight:500;font-size:30px;margin:10px 0">Football general knowledge quiz</h1>
+    <p class="lede">Thirty football general knowledge questions on England's top flight, from the first
+    Premier League season in 1992–93 to the present day. Three rounds, one for each era. Have a go,
+    then tap "Show answer" to check. A score of 20 or more is very good going.</p>
+    <h2>Round one: the 1990s</h2>
+<ol><li value="1">Which broadcaster&#x27;s television deal launched the Premier League in 1992?<details><summary>Show answer</summary><p>Sky</p></details></li><li value="2">Which manager retired in 1993 after 18 years at Nottingham Forest&#x27;s City Ground?<details><summary>Show answer</summary><p>Brian Clough</p></details></li><li value="3">Alan Shearer joined Blackburn for a British record fee in 1992. Which club did he leave?<details><summary>Show answer</summary><p>Southampton</p></details></li><li value="4">Which club finished bottom in 1993–94, their first top-flight season, conceding 100 league goals?<details><summary>Show answer</summary><p>Swindon Town</p></details></li><li value="5">What was the nickname of Blackburn&#x27;s title-winning strike partnership in 1994–95?<details><summary>Show answer</summary><p>The SAS</p></details></li><li value="6">In Manchester United&#x27;s record 9–0 win over Ipswich in 1995, how many goals did one player score?<details><summary>Show answer</summary><p>Five</p></details></li><li value="7">Which Dutch forward joined Arsenal in the summer of 1995?<details><summary>Show answer</summary><p>Dennis Bergkamp</p></details></li><li value="8">Which 17-year-old scored on his debut at Selhurst Park in 1996–97?<details><summary>Show answer</summary><p>Michael Owen</p></details></li><li value="9">Which Manchester United youngster was voted PFA Young Player of the Year in 1997?<details><summary>Show answer</summary><p>David Beckham</p></details></li><li value="10">In 1997–98, Ian Wright became Arsenal&#x27;s all-time top scorer against which club?<details><summary>Show answer</summary><p>Bolton Wanderers</p></details></li></ol><h2>Round two: the 2000s</h2>
+<ol><li value="11">Which Dutch striker won the Golden Boot in 2000–01 with 23 goals?<details><summary>Show answer</summary><p>Jimmy Floyd Hasselbaink</p></details></li><li value="12">Chelsea&#x27;s 2005 league title ended a wait of how many years?<details><summary>Show answer</summary><p>50</p></details></li><li value="13">Who was the first Chelsea player to win the PFA Players&#x27; Player of the Year award?<details><summary>Show answer</summary><p>John Terry</p></details></li><li value="14">How many league goals did Thierry Henry score to win the 2005–06 Golden Boot?<details><summary>Show answer</summary><p>27</p></details></li><li value="15">Which Watford goalkeeper was beaten by Paul Robinson&#x27;s free-kick from his own half in 2006–07?<details><summary>Show answer</summary><p>Ben Foster</p></details></li><li value="16">Who scored Portsmouth&#x27;s winner against Cardiff in the 2008 FA Cup final?<details><summary>Show answer</summary><p>Kanu</p></details></li><li value="17">How did Manchester United beat Spurs in the 2009 League Cup final?<details><summary>Show answer</summary><p>On penalties</p></details></li><li value="18">Manchester United&#x27;s 2009 title equalled Liverpool&#x27;s record of how many league titles?<details><summary>Show answer</summary><p>18</p></details></li><li value="19">How many points were deducted from Portsmouth in 2009–10 for going into administration?<details><summary>Show answer</summary><p>Nine</p></details></li><li value="20">How many second-half goals did Jermain Defoe score in Tottenham&#x27;s 9–1 win in November 2009?<details><summary>Show answer</summary><p>Five</p></details></li></ol><h2>Round three: the 2010s and 2020s</h2>
+<ol><li value="21">Who was Chelsea&#x27;s caretaker manager when they won the FA Cup and the Champions League in 2012?<details><summary>Show answer</summary><p>Roberto Di Matteo</p></details></li><li value="22">Which club won the 2013 League Cup, beating Bradford 5–0 in the final?<details><summary>Show answer</summary><p>Swansea City</p></details></li><li value="23">Which goal-line technology system was first used in the Premier League in 2013–14?<details><summary>Show answer</summary><p>Hawk-Eye</p></details></li><li value="24">Which club beat Liverpool 6–1 on the final day of the 2014–15 season?<details><summary>Show answer</summary><p>Stoke City</p></details></li><li value="25">Which Chelsea midfielder was named Player of the Season in 2016–17?<details><summary>Show answer</summary><p>N&#x27;Golo Kanté</p></details></li><li value="26">At which ground did a Premier League record crowd of 83,222 watch Tottenham beat Arsenal?<details><summary>Show answer</summary><p>Wembley</p></details></li><li value="27">Which Fulham player became the youngest in Premier League history, aged 16 years and 30 days?<details><summary>Show answer</summary><p>Harvey Elliott</p></details></li><li value="28">Which storm forced the postponement of Manchester City v West Ham in February 2020?<details><summary>Show answer</summary><p>Storm Ciara</p></details></li><li value="29">Which Spurs forward became the first Asian player to win the Golden Boot?<details><summary>Show answer</summary><p>Son Heung-min</p></details></li><li value="30">Who was the first Australian to manage in the Premier League?<details><summary>Show answer</summary><p>Ange Postecoglou</p></details></li></ol>
+    <h2>Fancy more?</h2>
+    <p class="more">There is a free 12-clue sports crossword every day on the <a href="/">home page</a>,
+    and a crossword for <a href="/puzzles/">every top-flight season since 1992</a>. For a whole book of
+    football crosswords and quizzes, try <a href="https://www.amazon.co.uk/dp/B0HMP3HHW5?tag=dermcarm089-21"
+    target="_blank" rel="noopener sponsored">Top-Flight Football Crosswords: England</a>, printed by Amazon.</p>
+  </main>
+</div>
+</body>
+</html>

@@ -218,7 +218,8 @@ archive = f"""<!doctype html>
   <header><h1 class="brand"><a href="/" style="color:inherit;text-decoration:none">Injury Time <span>Puzzles</span></a></h1></header>
   <main class="arch">
     <p>Every crossword we have published, free to play in your browser. There is a new one
-    every day on the <a href="/">home page</a>.</p>
+    every day on the <a href="/">home page</a>, and a
+    <a href="/football-general-knowledge-quiz/">football general knowledge quiz</a> with 30 questions and answers.</p>
     <h2>England's top flight, season by season</h2>
     <ul>{items(football, lambda p: season_of(p) + " season")}</ul>
     <h2>Golf</h2>
@@ -250,8 +251,14 @@ embed = embed.replace(
 (ROOT / "embed").mkdir(exist_ok=True)
 (ROOT / "embed" / "index.html").write_text(embed, encoding="utf-8")
 
+# --- football general knowledge quiz -----------------------------------------
+import quiz_page
+(ROOT / quiz_page.SLUG).mkdir(exist_ok=True)
+(ROOT / quiz_page.SLUG / "index.html").write_text(quiz_page.build(SITE, fonts, style), encoding="utf-8")
+
 # --- sitemap -----------------------------------------------------------------
-urls = [(f"{SITE}/", "daily"), (f"{SITE}/puzzles/", "weekly")] + \
+urls = [(f"{SITE}/", "daily"), (f"{SITE}/puzzles/", "weekly"),
+        (f"{SITE}/{quiz_page.SLUG}/", "monthly")] + \
        [(f"{SITE}/puzzles/{s}/", "monthly") for s in SLUGS]
 sm = ['<?xml version="1.0" encoding="UTF-8"?>',
       '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
