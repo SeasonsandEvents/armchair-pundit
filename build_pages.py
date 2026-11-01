@@ -47,8 +47,8 @@ def season_of(p):
 def page_title(p):
     s = season_of(p)
     if s:
-        return f"{s} Football Season Crossword: England's Top Flight | Injury Time Puzzles"
-    return f"{p['title']}: Golf Crossword | Injury Time Puzzles"
+        return f"{s} Football Crossword: England's Top Flight"
+    return f"{p['title']}: Golf Crossword"
 
 
 def heading(p):
@@ -205,7 +205,7 @@ archive = f"""<!doctype html>
 <meta property="og:title" content="Every crossword | Injury Time Puzzles">
 <meta property="og:description" content="{html.escape(arch_desc)}">
 <meta property="og:image" content="{SITE}/pins/daily.png">
-<title>Football and Golf Crosswords, Season by Season | Injury Time Puzzles</title>
+<title>Football and Golf Crosswords, Season by Season</title>
 {fonts}
 {style}
 <style>.arch h2{{font-family:var(--display);font-weight:500;font-size:22px;margin:22px 0 8px}}
